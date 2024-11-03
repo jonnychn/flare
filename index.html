@@ -116,10 +116,14 @@
         <div class="content" id="controlPanel">
             <button onclick="startEmergencyMode()">Emergency Mode</button>
             <button onclick="startMysticalMode()">Mystical Mode</button>
+            <label for="flashingSpeed">Flashing Speed</label>
+            <input type="range" id="flashingSpeed" min="100" max="1000" step="100" value="500" onchange="updateFlashingSpeed()">
             <button onclick="pauseEffect()">Pause</button>
             <label for="colorTemp">Color Temperature</label>
             <input type="range" id="colorTemp" min="2000" max="8000" step="100" onchange="changeColorTemperature()">
             <button onclick="startReadingMode()">Reading Mode</button>
+            <label for="readingTemp">Reading Temperature</label>
+            <input type="range" id="readingTemp" min="2000" max="3500" step="100" onchange="changeReadingTemperature()">
             <div class="color-palette" id="colorPalette">
                 <div class="color-box" style="background: #ff0000;" onclick="changeBackgroundColor('#ff0000')"></div>
                 <div class="color-box" style="background: #ff8000;" onclick="changeBackgroundColor('#ff8000')"></div>
@@ -137,6 +141,7 @@
 
     <script>
         let intervalId;
+        let flashingSpeed = 500;
 
         function toggleControlPanel() {
             const controlPanel = document.getElementById('controlPanel');
@@ -156,7 +161,14 @@
                 } else {
                     document.body.style.backgroundColor = 'red';
                 }
-            }, 500); // Change color every 500 milliseconds
+            }, flashingSpeed); // Change color based on flashing speed
+        }
+
+        function updateFlashingSpeed() {
+            flashingSpeed = document.getElementById('flashingSpeed').value;
+            if (intervalId) {
+                startEmergencyMode();
+            }
         }
 
         function startMysticalMode() {
@@ -194,8 +206,18 @@
 
         function startReadingMode() {
             clearInterval(intervalId);
-            document.body.style.transition = 'background-color 1s ease';
-            document.body.style.backgroundColor = 'rgba(255, 244, 229, 1)'; // Warm light for reading
+            changeReadingTemperature();
+        }
+
+        function changeReadingTemperature() {
+            const readingTemp = document.getElementById('readingTemp').value;
+            let color;
+            if (readingTemp <= 3000) {
+                color = `rgb(255, ${Math.floor(140 + (readingTemp - 2000) / 1000 * 115)}, 100)`;
+            } else {
+                color = `rgb(255, 219, 153)`; // Warmer color for higher range
+            }
+            document.body.style.backgroundColor = color;
         }
 
         function changeBackgroundColor(color) {
