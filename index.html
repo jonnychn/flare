@@ -78,18 +78,7 @@
             border-radius: 50%;
             margin: 20px;
             cursor: crosshair;
-            background: conic-gradient(
-                red, yellow, lime, cyan, blue, magenta, red
-            );
             position: relative;
-        }
-        canvas {
-            width: 250px;
-            height: 250px;
-            border-radius: 50%;
-            position: absolute;
-            top: 0;
-            left: 0;
         }
     </style>
 </head>
@@ -102,7 +91,7 @@
         <input type="range" id="colorTemp" min="2000" max="8000" step="100" onchange="changeColorTemperature()">
         <button onclick="startReadingMode()">Reading Mode</button>
         <div id="colorPicker">
-            <canvas id="colorCanvas"></canvas>
+            <canvas id="colorCanvas" width="250" height="250"></canvas>
         </div>
     </div>
 
@@ -164,7 +153,6 @@
             const canvas = document.getElementById('colorCanvas');
             const ctx = canvas.getContext('2d');
             const radius = canvas.width / 2;
-            const image = ctx.createImageData(canvas.width, canvas.height);
 
             for (let y = -radius; y < radius; y++) {
                 for (let x = -radius; x < radius; x++) {
@@ -172,7 +160,7 @@
                     if (distance <= radius) {
                         const angle = Math.atan2(y, x) + Math.PI;
                         const hue = angle * 180 / Math.PI;
-                        const saturation = distance / radius * 100;
+                        const saturation = (distance / radius) * 100;
                         ctx.fillStyle = `hsl(${hue}, ${saturation}%, 50%)`;
                         ctx.fillRect(x + radius, y + radius, 1, 1);
                     }
@@ -187,8 +175,11 @@
             const y = event.clientY - rect.top;
             const ctx = canvas.getContext('2d');
             const imgData = ctx.getImageData(x, y, 1, 1).data;
-            const color = `rgb(${imgData[0]}, ${imgData[1]}, ${imgData[2]})`;
-            document.body.style.backgroundColor = color;
+
+            if (imgData[3] !== 0) { // Ensure it's not a transparent pixel
+                const color = `rgb(${imgData[0]}, ${imgData[1]}, ${imgData[2]})`;
+                document.body.style.backgroundColor = color;
+            }
         }
 
         window.onload = function () {
