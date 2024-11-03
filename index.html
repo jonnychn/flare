@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency & Mystical Light App</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+        button {
+            padding: 15px;
+            margin: 10px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button onclick="startEmergencyMode()">Emergency Mode</button>
+        <button onclick="startMysticalMode()">Mystical Mode</button>
+    </div>
+
+    <script>
+        let intervalId;
+
+        function startEmergencyMode() {
+            clearInterval(intervalId);
+            document.body.style.transition = 'none';
+            intervalId = setInterval(() => {
+                if (document.body.style.backgroundColor === 'red') {
+                    document.body.style.backgroundColor = 'white';
+                } else {
+                    document.body.style.backgroundColor = 'red';
+                }
+            }, 500); // Change color every 500 milliseconds
+        }
+
+        function startMysticalMode() {
+            clearInterval(intervalId);
+            changeToMystical();
+        }
+
+        function changeToMystical() {
+            const colors = [
+                '#ff0000', '#ff8000', '#ffff00', '#80ff00', '#00ff80',
+                '#00ffff', '#0080ff', '#8000ff', '#ff00ff', '#ff0080'
+            ];
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            document.body.style.transition = 'background-color 2s ease';
+            document.body.style.backgroundColor = randomColor;
+            intervalId = setTimeout(changeToMystical, 2000); // Change color every 2 seconds
+        }
+    </script>
+</body>
+</html>
